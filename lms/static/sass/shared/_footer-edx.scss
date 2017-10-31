@@ -44,6 +44,24 @@ footer#footer-edx-v3 {
     flex-wrap: wrap;
   }
 
+  * {
+    box-sizing: border-box;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+
+
+  .list-unstyled {
+    list-style: none;
+
+    @include padding-left(0);
+  }
+
   .flex-column {
     flex-direction: column;
   }
@@ -321,6 +339,81 @@ footer#footer-edx-v3 {
   @include media-breakpoint-up(sm) {
     padding: $baseline $baseline*0.5;
 
+    .column-1 {
+      flex: 0 0 58.33333%;
+      max-width: 58.33333%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-2 {
+      flex: 0 0 50%;
+      max-width: 50%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-3 {
+      flex: 0 0 50%;
+      max-width: 50%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-2-1 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+      //flex-basis: auto;
+    }
+
+    .column-2-2 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+      //flex-basis: auto;
+    }
+
+    .column-3-1 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-3-2 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
     div.container {
       min-width: 0;
       padding: 0;
@@ -410,6 +503,72 @@ footer#footer-edx-v3 {
   }
 
   @include media-breakpoint-up(md) {
+    .ml-auto {
+      margin-left: auto !important;
+    }
+    .column-1 {
+      flex: 0 0 25%;
+      max-width: 25%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-2 {
+      flex: 0 0 75%;
+      max-width: 75%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-3 {
+      flex: 0 0 75%;
+      max-width: 75%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-2-1 {
+      flex: 0 0 33.3333%;
+      max-width: 33.3333%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+      //flex-basis: auto;
+    }
+
+    .column-3-1 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-3-2 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
     .edx-footer-logo {
       display: inline-flex;
 
@@ -516,7 +675,71 @@ footer#footer-edx-v3 {
   @include media-breakpoint-up(lg) {
     padding: $baseline $baseline*0.5;
 
-    .margin {
+    .column-1 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-2 {
+      flex: 0 0 66.66667%;
+      max-width: 66.66667%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-3 {
+      flex: 0 0 33.3333%;
+      max-width: 33.3333%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-2-1 {
+      flex: 0 0 33.3333%;
+      max-width: 33.3333%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+      //flex-basis: auto;
+    }
+
+    .column-3-1 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-3-2 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .edx-footer-logo {
       @include margin-left($baseline);
     }
 
@@ -628,6 +851,70 @@ footer#footer-edx-v3 {
       @include border-left(1px solid $courseware-button-border-color);
     }
 
+    .column-1 {
+      flex: 0 0 16.6667%;
+      max-width: 16.6667%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-2 {
+      flex: 0 0 50%;
+      max-width: 50%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-3 {
+      flex: 0 0 33.3333%;
+      max-width: 33.3333%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .column-2-1 {
+      flex: 0 0 33.3333%;
+      max-width: 33.3333%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+      //flex-basis: auto;
+    }
+
+    .column-3-1 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+    .column-3-2 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+
+    }
+
+
     .second-div-border {
       @include border-left(1px solid $courseware-button-border-color);
     }
@@ -700,6 +987,6 @@ footer#footer-edx-v3 {
       cursor: initial;
     }
   }
-  
+
   @extend %ui-print-excluded;
 }
