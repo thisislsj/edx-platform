@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
-"""Video xmodule tests in mongo."""
+"""
+Video xmodule tests in mongo.
+"""
 
 import json
 from collections import OrderedDict
 from uuid import uuid4
 
-import ddt
+from tempfile import mkdtemp
 import shutil
+import ddt
 from django.conf import settings
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.test.utils import override_settings
 from fs.osfs import OSFS
+from fs.path import combine
 from edxval.api import (
     ValCannotCreateError,
     ValVideoNotFoundError,
@@ -27,7 +31,6 @@ from lxml import etree
 from mock import MagicMock, Mock, patch
 from nose.plugins.attrib import attr
 from path import Path as path
-from tempfile import mkdtemp
 
 from xmodule.contentstore.content import StaticContent
 from xmodule.exceptions import NotFoundError
@@ -1534,7 +1537,7 @@ class VideoDescriptorTest(TestCase, VideoDescriptorTestBase):
         return dict(
             video_id=video_id,
             language_code='ar',
-            url='/media/ext101.srt',
+            url='{media_url}ext101.srt'.format(media_url=settings.MEDIA_URL),   # MEDIA_URL is /static/uploads/
             provider='Cielo24',
             file_format='srt',
         )
@@ -1572,7 +1575,7 @@ class VideoDescriptorTest(TestCase, VideoDescriptorTestBase):
         """
         language_code = 'ar'
         transcript_file_name = 'test_edx_video_id-ar.srt'
-        expected_transcript_path = self.temp_dir + EXPORT_STATIC_PATH + '/' + transcript_file_name
+        expected_transcript_path = combine(self.temp_dir, combine(EXPORT_STATIC_PATH, transcript_file_name))
         self.descriptor.edx_video_id = 'test_edx_video_id'
 
         create_profile('mobile')
@@ -1609,7 +1612,6 @@ class VideoDescriptorTest(TestCase, VideoDescriptorTestBase):
                 </video_asset>
             </video>
         """.format(
-            video_id=self.descriptor.edx_video_id,
             transcript_name=transcript_url.split('/')[-1],
             language_code=language_code
         )
