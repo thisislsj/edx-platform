@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Tests for transcripts_utils. """
 import copy
+import tempfile
 import ddt
 import json
 import textwrap
@@ -751,7 +752,7 @@ class TestGetTranscript(SharedModuleStoreTestCase):
 
         self.subs = {
             u'en': self.subs_srt,
-            u'ur': json.dumps(self.subs_sjson),
+            u'ur': transcripts_utils.Transcript.convert(json.dumps(self.subs_sjson), 'sjson', 'srt'),
         }
 
         self.srt_mime_type = transcripts_utils.Transcript.mime_types[transcripts_utils.Transcript.SRT]
@@ -761,13 +762,13 @@ class TestGetTranscript(SharedModuleStoreTestCase):
         self.vertical = ItemFactory.create(category='vertical', parent_location=self.course.location)
         self.video = ItemFactory.create(category='video', parent_location=self.vertical.location)
 
-    def create_transcript(self, subs_id, language=u'en'):
+    def create_transcript(self, subs_id, language=u'en', filename='video.srt'):
         """
         create transcript.
         """
         transcripts = {}
         if language != u'en':
-            transcripts = {language: transcripts_utils.subs_filename(subs_id, language)}
+            transcripts = {language: filename}
 
         self.video = ItemFactory.create(
             category='video',
@@ -775,13 +776,41 @@ class TestGetTranscript(SharedModuleStoreTestCase):
             sub=subs_id,
             transcripts=transcripts
         )
-        # pylint: disable=attribute-defined-outside-init
-        self.saved_sub = transcripts_utils.save_subs_to_store(
-            self.subs_sjson,
-            subs_id,
-            self.video,
-            language=language,
+
+        if subs_id:
+            # pylint: disable=attribute-defined-outside-init
+            self.saved_sub = transcripts_utils.save_subs_to_store(
+                self.subs_sjson,
+                subs_id,
+                self.video,
+                language=language,
+            )
+
+    def create_srt_file(self, content):
+        """
+        Create srt file.
+        """
+        srt_file = tempfile.NamedTemporaryFile(suffix=".srt")
+        srt_file.content_type = transcripts_utils.Transcript.SRT
+        srt_file.write(content)
+        srt_file.seek(0)
+        return srt_file
+
+    def upload_file(self, subs_file, location, filename):
+        """
+        Upload a file in content store.
+
+        Arguments:
+            subs_file (File): pointer to file to be uploaded
+            location (Locator): Item location
+            filename (unicode): Name of file to be uploaded
+        """
+        mime_type = subs_file.content_type
+        content_location = StaticContent.compute_location(
+            location.course_key, filename
         )
+        content = StaticContent(content_location, filename, mime_type, subs_file.read())
+        contentstore().save(content)
 
     @ddt.data(
         # en lang does not exist so NotFoundError will be raised
@@ -797,12 +826,25 @@ class TestGetTranscript(SharedModuleStoreTestCase):
         with self.assertRaises(NotFoundError):
             transcripts_utils.get_transcript(self.course.id, self.video.location.block_id, lang=lang)
 
-    def test_get_transcript_from_content_store_for_en(self):
+    @ddt.data(
+        {
+            'language': u'en',
+            'subs_id': 'video_101',
+            'filename': 'en_video_101.srt',
+        },
+        {
+            'language': u'ur',
+            'subs_id': '',
+            'filename': 'ur_video_101.srt',
+        },
+    )
+    @ddt.unpack
+    def test_get_transcript_from_content_store(self, language, subs_id, filename):
         """
-        Verify that `get_transcript` function returns correct data for english when transcript is in content store.
+        Verify that `get_transcript` function returns correct data when transcript is in content store.
         """
-        language = u'en'
-        self.create_transcript(self.subs_id)
+        self.upload_file(self.create_srt_file(self.subs_srt), self.video.location, filename)
+        self.create_transcript(subs_id, language, filename)
         content, filename, mimetype = transcripts_utils.get_transcript(
             self.course.id,
             self.video.location.block_id,
@@ -810,7 +852,7 @@ class TestGetTranscript(SharedModuleStoreTestCase):
         )
 
         self.assertEqual(content, self.subs[language])
-        self.assertEqual(filename, 'en_video_101.srt')
+        self.assertEqual(filename, filename)
         self.assertEqual(mimetype, self.srt_mime_type)
 
     def test_get_transcript_from_content_store_for_ur(self):
@@ -826,7 +868,7 @@ class TestGetTranscript(SharedModuleStoreTestCase):
             output_format=transcripts_utils.Transcript.SJSON
         )
 
-        self.assertEqual(json.loads(content), json.loads(self.subs[language]))
+        self.assertEqual(json.loads(content), self.subs_sjson)
         self.assertEqual(filename, 'ur_video_101.sjson')
         self.assertEqual(mimetype, self.sjson_mime_type)
 

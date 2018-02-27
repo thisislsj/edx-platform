@@ -867,26 +867,6 @@ class VideoTranscriptsMixin(object):
         }
 
 
-def get_transcript_from_content_store(video_descriptor, lang=None):
-    """
-    Get video transcript from content store.
-    Arguments:
-        video_descriptor (Video Descriptor): course identifier
-        lang (unicode): transcript language
-    Returns:
-        tuple containing content, filename, mimetype
-    """
-    try:
-        transcripts = video_descriptor.get_transcripts_info()
-        content, filename, mimetype = video_descriptor.get_transcript(transcripts, lang=lang)
-    except (KeyError, ValueError):
-        raise NotFoundError(
-            u"Transcript not found for {}, lang: {}".format(video_descriptor.location.block_id, lang)
-        )
-
-    return content, filename.encode('utf-8'), mimetype
-
-
 def get_transcript_from_val(edx_video_id, lang=None, output_format=Transcript.SRT):
     """
     Get video transcript from edx-val.
@@ -907,7 +887,7 @@ def get_transcript_from_val(edx_video_id, lang=None, output_format=Transcript.SR
     content = transcript['content']
     mimetype = Transcript.mime_types[output_format]
 
-    return content, filename.encode('utf-8'), mimetype
+    return content, filename, mimetype
 
 
 def get_transcript_for_video(video_location, subs_id, file_name, language):
@@ -949,7 +929,6 @@ def get_transcript_from_contentstore(video, language, output_format, youtube_id=
     Returns:
         tuple containing content, filename, mimetype
     """
-
     transcripts_info = video.get_transcripts_info(is_bumper=is_bumper)
     sub, other_languages = transcripts_info['sub'], transcripts_info['transcripts']
     transcripts = dict(other_languages)
@@ -966,7 +945,7 @@ def get_transcript_from_contentstore(video, language, output_format, youtube_id=
         input_format, base_name, transcript_content = get_transcript_for_video(
             video.location,
             subs_id=transcripts['en'],
-            file_name=transcripts.get(language),
+            file_name=language and transcripts[language],
             language=language
         )
     except KeyError:
@@ -983,7 +962,7 @@ def get_transcript_from_contentstore(video, language, output_format, youtube_id=
             generate_subs(youtube_ids.get(youtube_id, 1), 1, json.loads(transcript_content))
         )
 
-    return transcript_content, transcript_name.encode('utf-8'), Transcript.mime_types[output_format]
+    return transcript_content, transcript_name, Transcript.mime_types[output_format]
 
 
 def get_transcript(course_id, block_id, lang=None, output_format=Transcript.SRT, is_bumper=False):
