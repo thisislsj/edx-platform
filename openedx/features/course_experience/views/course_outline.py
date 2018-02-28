@@ -157,14 +157,19 @@ class CourseOutlineFragmentView(EdxFragmentView):
 
     def mark_first_unit_to_resume(self, course_block_tree):
         def get_first_child(block):
-            return block.get('children')[0]
+            children = block.get('children')
+            return children[0] if children else None
 
         first_section = get_first_child(course_block_tree)
-        first_subsection = get_first_child(first_section)
-        first_unit = get_first_child(first_subsection)
+        if first_section:
+            first_section['resume_block'] = True
 
-        first_section['resume_block'] = True
-        first_subsection['resume_block'] = True
-        first_unit['resume_block'] = True
+        first_subsection = get_first_child(first_section)
+        if first_subsection:
+            first_subsection['resume_block'] = True
+
+        first_unit = get_first_child(first_subsection)
+        if first_unit:
+            first_unit['resume_block'] = True
 
         return course_block_tree
