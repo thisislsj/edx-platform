@@ -3,16 +3,16 @@ import Cookies from 'js-cookie';
 
 import endpoints from './endpoints';
 
-export function requestEntitlements(username_or_email) {
+export function requestEntitlements(usernameOrEmail) {
   return fetch(
-    `${endpoints.entitlementList}/${username_or_email}`, {
+    `${endpoints.entitlementList}/${usernameOrEmail}`, {
       credentials: 'same-origin',
       method: 'get'
     },
   );
 }
 
-export function createEntitlement(course_uuid, user, mode, reason, comments) {
+export function createEntitlement(courseUuid, user, mode, reason, comments) {
   return fetch(
     `${endpoints.entitlementList}/${user}`, {
       credentials: 'same-origin',
@@ -23,7 +23,7 @@ export function createEntitlement(course_uuid, user, mode, reason, comments) {
         'X-CSRFToken': Cookies.get('csrftoken'),
       },
       body: JSON.stringify({
-        course_uuid: course_uuid,
+        course_uuid: courseUuid,
         user: user,
         mode: mode,
         reason: reason,
@@ -33,8 +33,8 @@ export function createEntitlement(course_uuid, user, mode, reason, comments) {
   );
 }
 
-export function updateEntitlement(email, reason, entitlement_uuid, comments) {
-  //Only requires an 'email' parameter to construct the url, not actually sent in the call
+export function updateEntitlement(email, reason, entitlementUuid, comments) {
+  //Only requires an 'email' parameter to construct the url, not actually sent in the body
   return fetch(
     `${endpoints.entitlementList}/${email}`, {
       credentials: 'same-origin',
@@ -45,7 +45,7 @@ export function updateEntitlement(email, reason, entitlement_uuid, comments) {
         'X-CSRFToken': Cookies.get('csrftoken'),
       },
       body:JSON.stringify({
-      	entitlement_uuid: entitlement_uuid,
+      	entitlement_uuid: entitlementUuid,
         reason: reason,
       	comments: comments
       }),
