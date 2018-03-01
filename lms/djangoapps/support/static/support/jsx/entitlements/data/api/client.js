@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 import endpoints from './endpoints';
 
-export function requestEntitlements(usernameOrEmail) {
+export function requestEntitlements({usernameOrEmail}) {
   return fetch(
     `${endpoints.entitlementList}/${usernameOrEmail}`, {
       credentials: 'same-origin',
@@ -12,7 +12,7 @@ export function requestEntitlements(usernameOrEmail) {
   );
 }
 
-export function createEntitlement(courseUuid, user, mode, reason, comments) {
+export function createEntitlement({courseUuid, user, mode, reason, comments}) {
   return fetch(
     `${endpoints.entitlementList}/${user}`, {
       credentials: 'same-origin',
@@ -33,7 +33,7 @@ export function createEntitlement(courseUuid, user, mode, reason, comments) {
   );
 }
 
-export function updateEntitlement(email, reason, entitlementUuid, comments) {
+export function updateEntitlement({email, reason, entitlementUuid, comments}) {
   //Only requires an 'email' parameter to construct the url, not actually sent in the body
   return fetch(
     `${endpoints.entitlementList}/${email}`, {
