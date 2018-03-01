@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 import endpoints from './endpoints';
 
 export function requestEntitlements(username_or_email) {
-	console.log('called requestEntitlements api function');
   return fetch(
     `${endpoints.entitlementList}/${username_or_email}`, {
       credentials: 'same-origin',
