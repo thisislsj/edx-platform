@@ -8,6 +8,7 @@ import time
 
 import six
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.urlresolvers import NoReverseMatch, reverse
 from django.dispatch import Signal
 from django.utils.http import cookie_date
@@ -169,7 +170,10 @@ def get_user_info_cookie_data(request):
         pass
 
     # Add 'resume course' last completed block
-    header_urls['resume_block'] = retrieve_last_sitewide_block_completed(user)
+    try:
+        header_urls['resume_block'] = retrieve_last_sitewide_block_completed(user)
+    except User.DoesNotExist:
+        pass
 
     # Convert relative URL paths to absolute URIs
     for url_name, url_path in six.iteritems(header_urls):
