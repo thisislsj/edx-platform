@@ -3,6 +3,12 @@ import Cookies from 'js-cookie';
 
 import endpoints from './endpoints';
 
+const headers = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+  'X-CSRFToken': Cookies.get('csrftoken'),
+}
+
 export function requestEntitlements({usernameOrEmail}) {
   return fetch(
     `${endpoints.entitlementList}/${usernameOrEmail}`, {
@@ -17,11 +23,7 @@ export function createEntitlement({courseUuid, user, mode, reason, comments}) {
     `${endpoints.entitlementList}/${user}`, {
       credentials: 'same-origin',
       method: 'post',
-      headers:{
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRFToken': Cookies.get('csrftoken'),
-      },
+      headers: headers,
       body: JSON.stringify({
         course_uuid: courseUuid,
         user: user,
@@ -34,16 +36,13 @@ export function createEntitlement({courseUuid, user, mode, reason, comments}) {
 }
 
 export function updateEntitlement({email, reason, entitlementUuid, comments}) {
-  //Only requires an 'email' parameter to construct the url, not actually sent in the body
+  //Email param may be removable when EntitlementSupportListView
+  // url pattern is modified to not require a username/email 
   return fetch(
     `${endpoints.entitlementList}/${email}`, {
       credentials: 'same-origin',
       method: 'put',
-      headers:{
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRFToken': Cookies.get('csrftoken'),
-      },
+      headers: headers,
       body:JSON.stringify({
       	entitlement_uuid: entitlementUuid,
         reason: reason,
