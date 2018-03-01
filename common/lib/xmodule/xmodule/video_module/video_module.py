@@ -648,8 +648,12 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
             field_data,
         )
 
-        # update val with info extracted from `xml_object`
-        video.import_video_info_into_val(xml_object, getattr(id_generator, 'target_course_id', None))
+        # Update VAL with info extracted from `xml_object`
+        video.import_video_info_into_val(
+            xml_object,
+            system.resources_fs,
+            getattr(id_generator, 'target_course_id', None)
+        )
 
         return video
 
@@ -711,6 +715,7 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
             for transcript_language in sorted(self.transcripts.keys()):
                 ele = etree.Element('transcript')
                 ele.set('language', transcript_language)
+                # TODO: Remove src attr?
                 ele.set('src', self.transcripts[transcript_language])
                 xml.append(ele)
 
@@ -932,12 +937,13 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
 
         return field_data
 
-    def import_video_info_into_val(self, xml, course_id):
+    def import_video_info_into_val(self, xml, resource_fs, course_id):
         """
         Import parsed video info from `xml` into edxval.
 
         Arguments:
-            xml (lxml object): xml representation of video to be imported
+            xml (lxml object): xml representation of video to be imported.
+            resource_fs (OSFS): Import file system.
             course_id (str): course id
         """
         edx_video_id = ''
@@ -945,13 +951,12 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
             edx_video_id = self.edx_video_id.strip()
 
         video_asset_elem = xml.find('video_asset')
+
         if edxval_api and video_asset_elem is not None:
-            # Always pass the edx_video_id, Whether the video is internal or external
-            # In case of external, we only need to import transcripts and for that
-            # purpose video id is already present in the xml
             edxval_api.import_from_xml(
                 video_asset_elem,
                 edx_video_id,
+                resource_fs,
                 course_id=course_id
             )
 
