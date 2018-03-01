@@ -43,10 +43,10 @@ export function updateEntitlement({email, reason, entitlementUuid, comments}) {
       credentials: 'same-origin',
       method: 'put',
       headers: headers,
-      body:JSON.stringify({
-      	entitlement_uuid: entitlementUuid,
+      body: JSON.stringify({
+        entitlement_uuid: entitlementUuid,
         reason: reason,
-      	comments: comments
+        comments: comments
       }),
     }
   );

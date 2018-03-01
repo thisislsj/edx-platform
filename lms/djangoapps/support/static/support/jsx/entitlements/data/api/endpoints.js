@@ -1,4 +1,3 @@
 export {
-  entitlementList: 'whatever',
-  inTheFutureSomeOtherEndpoint: 'moar whatever',
-};
+  entitlementList: '/support/entitlement_list',
+}; 
