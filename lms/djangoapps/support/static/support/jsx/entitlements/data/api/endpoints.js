@@ -1,3 +1,4 @@
-module.exports = {
-  entitlementList: '/support/entitlement_list',
-}; 
+export {
+  entitlementList: 'whatever',
+  inTheFutureSomeOtherEndpoint: 'moar whatever',
+};

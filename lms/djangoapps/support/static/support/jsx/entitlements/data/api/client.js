@@ -1,7 +1,7 @@
-import 'whatwg-fetch'; // fetch polyfill
+import 'whatwg-fetch';
 import Cookies from 'js-cookie';
 
-import endpoints from './endpoints';
+import { entitlementList } from './endpoints';
 
 const headers = {
   Accept: 'application/json',
@@ -11,7 +11,7 @@ const headers = {
 
 export function requestEntitlements({usernameOrEmail}) {
   return fetch(
-    `${endpoints.entitlementList}/${usernameOrEmail}`, {
+    `${entitlementList}/${usernameOrEmail}`, {
       credentials: 'same-origin',
       method: 'get'
     },
@@ -20,7 +20,7 @@ export function requestEntitlements({usernameOrEmail}) {
 
 export function createEntitlement({courseUuid, user, mode, reason, comments}) {
   return fetch(
-    `${endpoints.entitlementList}/${user}`, {
+    `${entitlementList}/${user}`, {
       credentials: 'same-origin',
       method: 'post',
       headers: headers,
@@ -39,7 +39,7 @@ export function updateEntitlement({email, reason, entitlementUuid, comments}) {
   //Email param may be removable when EntitlementSupportListView
   // url pattern is modified to not require a username/email 
   return fetch(
-    `${endpoints.entitlementList}/${email}`, {
+    `${entitlementList}/${email}`, {
       credentials: 'same-origin',
       method: 'put',
       headers: headers,
