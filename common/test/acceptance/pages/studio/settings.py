@@ -263,15 +263,15 @@ class SettingsPage(CoursePage):
         selected = checkbox.is_selected()
         if required and not selected:
             checkbox.click()
-            self.wait_for_element_visibility(
+            self.wait_for_element_presence(
                 '#entrance-exam-minimum-score-pct',
-                'Entrance exam minimum score percent is visible'
+                'Entrance exam minimum score percent is present'
             )
         if not required and selected:
             checkbox.click()
-            self.wait_for_element_invisibility(
+            self.wait_for_element_absence(
                 '#entrance-exam-minimum-score-pct',
-                'Entrance exam minimum score percent is invisible'
+                'Entrance exam minimum score percent is absent'
             )
 
     def save_changes(self, wait_for_confirmation=True):
