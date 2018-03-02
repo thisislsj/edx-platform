@@ -3,6 +3,7 @@ Tests for the Course Outline view and supporting views.
 """
 import datetime
 import json
+import re
 
 from completion import waffle
 from completion.models import BlockCompletion
@@ -542,11 +543,11 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
         def get_sequential_button(url, is_hidden):
             is_hidden_string = "is_hidden" if is_hidden else ""
 
-            return "<ol class=\"outline-item accordion-panel" + is_hidden_string + "\"" \
-                     " id=\"" + url + "_contents\"" \
-                     " role=\"region\"" \
-                     " aria-labelledby=\"" + url + "\"" \
-                     ">\""
+            return "<olclass=\"outline-itemaccordion-panel" + is_hidden_string + "\"" \
+                     "id=\"" + url + "_contents\"" \
+                     "role=\"region\"" \
+                     "aria-labelledby=\"" + url + "\"" \
+                     ">"
 
         self.override_waffle_switch(True)
         get_patched_current_site.return_value = self.site
@@ -558,12 +559,12 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
             sequential1 = chapter.children[0]
             sequential2 = chapter.children[1]
 
-            response = self.client.get(course_home_url(course))
+            response = text_type(re.sub("\s+", "", self.client.get(course_home_url(course)).content))
 
             print(response)
 
-            self.assertContains(response, get_sequential_button(text_type(sequential1.location), False))
-            self.assertContains(response, get_sequential_button(text_type(sequential2.location), True))
+            self.assertTrue(get_sequential_button(text_type(sequential1.location), False) in response)
+            self.assertTrue(get_sequential_button(text_type(sequential2.location), True) in response)
 
 
 class TestCourseOutlinePreview(SharedModuleStoreTestCase):
