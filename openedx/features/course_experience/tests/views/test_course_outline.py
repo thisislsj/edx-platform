@@ -543,9 +543,9 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
             is_hidden_string = "is_hidden" if is_hidden else ""
 
             return "<ol class=\"outline-item accordion-panel" + is_hidden_string + "\"" \
-                     "id=\"" + url + "_contents\"" \
-                     "role=\"region\"" \
-                     "aria-labelledby=\"" + url + "\"" \
+                     " id=\"" + url + "_contents\"" \
+                     " role=\"region\"" \
+                     " aria-labelledby=\"" + url + "\"" \
                      ">\""
 
         self.override_waffle_switch(True)
@@ -556,22 +556,14 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
             course = self.course
             chapter = course.children[0]
             sequential1 = chapter.children[0]
-            vertical1 = sequential1.children[0]
             sequential2 = chapter.children[1]
-            vertical2 = sequential2.children[0]
 
             response = self.client.get(course_home_url(course))
-            vertical1_url = reverse(
-                'jump_to',
-                kwargs = {'course_id': course.id, 'location': vertical1.location}
-            )
-            vertical2_url = reverse(
-                'jump_to',
-                kwargs={'course_id': course.id, 'location': vertical2.location}
-            )
 
-            self.assertContains(response, get_sequential_button(vertical1_url, False))
-            self.assertContains(response, get_sequential_button(vertical2_url, True))
+            print(response)
+
+            self.assertContains(response, get_sequential_button(text_type(sequential1.location), False))
+            self.assertContains(response, get_sequential_button(text_type(sequential2.location), True))
 
 
 class TestCourseOutlinePreview(SharedModuleStoreTestCase):
