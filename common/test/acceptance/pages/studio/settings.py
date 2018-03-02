@@ -260,27 +260,13 @@ class SettingsPage(CoursePage):
         Set the entrance exam requirement via the checkbox.
         """
         checkbox = self.entrance_exam_field
-        import logging
-        logging.basicConfig()
-        logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
-        logger.info('************')
-        logger.info(checkbox.is_selected)
         selected = checkbox.is_selected()
-        if required and not selected:
-            logger.info('1')
-            checkbox.click()
-            self.wait_for_element_presence(
-                '#entrance-exam-minimum-score-pct',
-                'Entrance exam minimum score percent is present'
-            )
-        if not required and selected:
-            logger.info('2')
-            checkbox.click()
-            self.wait_for_element_absence(
-                '#entrance-exam-minimum-score-pct',
-                'Entrance exam minimum score percent is absent'
-            )
+        if required and not selected or not required and selected:
+            self.browser.execute_script("$('#entrance-exam-enabled').focus().click()")
+            self.wait_for_ajax()
+        # if not required and selected:
+        #     self.browser.execute_script("$('#entrance-exam-enabled').focus().click()")
+        #     self.wait_for_ajax()
 
     def save_changes(self, wait_for_confirmation=True):
         """
