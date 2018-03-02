@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from six import text_type
 
 from completion.models import BlockCompletion
+from completion.waffle import waffle as completion_waffle
 from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
 from openedx.core.djangoapps.theming.helpers import get_config_value_from_site_or_settings, get_current_site
 from xmodule.modulestore.django import modulestore
@@ -108,11 +109,13 @@ def retrieve_last_sitewide_block_completed(username):
     :return: block_lms_url
 
     """
+    if not completion_waffle.waffle().is_enabled(completion_waffle.ENABLE_COMPLETION_TRACKING):
+        return
+
     if not isinstance(username, User):
         userobj = User.objects.get(username=username)
     else:
         userobj = username
-
     latest_completions_by_course = BlockCompletion.latest_blocks_completed_all_courses(userobj)
 
     known_site_configs = [
