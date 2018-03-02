@@ -261,12 +261,10 @@ class SettingsPage(CoursePage):
         """
         checkbox = self.entrance_exam_field
         selected = checkbox.is_selected()
+        import pdb; pdb.set_trace()
         if required and not selected or not required and selected:
-            self.browser.execute_script("$('#entrance-exam-enabled').focus().click()")
+            self.browser.execute_script("$('#entrance-exam-enabled').click()")
             self.wait_for_ajax()
-        # if not required and selected:
-        #     self.browser.execute_script("$('#entrance-exam-enabled').focus().click()")
-        #     self.wait_for_ajax()
 
     def save_changes(self, wait_for_confirmation=True):
         """
