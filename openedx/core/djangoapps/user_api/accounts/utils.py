@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from six import text_type
 
+from completion import waffle as completion_waffle
 from completion.models import BlockCompletion
-from completion.waffle import waffle as completion_waffle
 from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
 from openedx.core.djangoapps.theming.helpers import get_config_value_from_site_or_settings, get_current_site
 from xmodule.modulestore.django import modulestore
