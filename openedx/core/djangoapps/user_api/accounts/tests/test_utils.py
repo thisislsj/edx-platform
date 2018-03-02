@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ddt
 from django.test import TestCase
 from django.test.utils import override_settings
+from mock import patch
 
 from completion import models, waffle
 from completion.test_utils import CompletionWaffleTestMixin
@@ -67,28 +68,23 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
     """
     Test completion utility functions
     """
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """
         Creates a test course that can be used for non-destructive tests
         """
-        # setUpClassAndTestData() already calls setUpClass on SharedModuleStoreTestCase
-        with super(CompletionUtilsTestCase, cls).setUpClassAndTestData():
-            cls._overrider = waffle.waffle().override(waffle.ENABLE_COMPLETION_TRACKING, True)
-            cls._overrider.__enter__()
-            cls.engaged_user = UserFactory.create()
-            cls.cruft_user = UserFactory.create()
-            cls.course = cls.create_test_course()
-            cls.submit_faux_completions()
-            cls.addCleanup(cls._overrider.__exit__, None, None, None)
+        super(CompletionUtilsTestCase, self).setUp()
+        self.override_waffle_switch(True)
+        self.engaged_user = UserFactory.create()
+        self.cruft_user = UserFactory.create()
+        self.course = self.create_test_course()
+        self.submit_faux_completions()
 
-    @classmethod
-    def create_test_course(cls):
+    def create_test_course(self):
         """
         Create, populate test course.
         """
         course = CourseFactory.create()
-        with cls.store.bulk_operations(course.id):
+        with self.store.bulk_operations(course.id):
             chapter = ItemFactory.create(category='chapter', parent_location=course.location)
             sequential = ItemFactory.create(category='sequential', parent_location=chapter.location)
             vertical1 = ItemFactory.create(category='vertical', parent_location=sequential.location)
@@ -97,27 +93,27 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         chapter.children = [sequential]
         sequential.children = [vertical1, vertical2]
 
-        if hasattr(cls, 'user_one'):
-            CourseEnrollment.enroll(cls.engaged_user, course.id)
-        if hasattr(cls, 'user_two'):
-            CourseEnrollment.enroll(cls.cruft_user, course.id)
+        if hasattr(self, 'user_one'):
+            CourseEnrollment.enroll(self.engaged_user, course.id)
+        if hasattr(self, 'user_two'):
+            CourseEnrollment.enroll(self.cruft_user, course.id)
         return course
 
-    @classmethod
-    def submit_faux_completions(cls):
+    def submit_faux_completions(self):
         """
         Submit completions (only for user_one)
         """
-        for block in cls.course.children[0].children[0].children:
+        for block in self.course.children[0].children[0].children:
             models.BlockCompletion.objects.submit_completion(
-                user=cls.engaged_user,
-                course_key=cls.course.id,
+                user=self.engaged_user,
+                course_key=self.course.id,
                 block_key=block.location,
                 completion=1.0
             )
 
     @override_settings(LMS_BASE='test_url:9999')
-    def test_retrieve_last_sitewide_block_completed_user(self):
+    @patch('completion.waffle.get_current_site')
+    def test_retrieve_last_sitewide_block_completed_user(self, get_patched_current_site):
         """
         Test that the method returns a URL for the "last completed" block
         when sending a user object
@@ -131,7 +127,8 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         self.assertEqual(empty_block_url, None)
 
     @override_settings(LMS_BASE='test_url:9999')
-    def test_retrieve_last_sitewide_block_completed_username(self):
+    @patch('completion.waffle.get_current_site')
+    def test_retrieve_last_sitewide_block_completed_username(self, get_patched_current_site):
         """
         Test that the method returns a URL for the "last completed" block
         when sending a username
