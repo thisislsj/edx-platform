@@ -539,6 +539,15 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
         in a course if a user has no completion data, and to the
         last-accessed unit if a user does have completion data.
         """
+        def get_sequential_button(url, is_hidden):
+            is_hidden_string = "is_hidden" if is_hidden else ""
+
+            return "<ol class=\"outline-item accordion-panel" + is_hidden_string + "\"" \
+                     "id=\"" + url + "_contents\"" \
+                     "role=\"region\"" \
+                     "aria-labelledby=\"" + url + "\"" \
+                     ">\""
+
         self.override_waffle_switch(True)
         get_patched_current_site.return_value = self.site
 
@@ -552,8 +561,17 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
             vertical2 = sequential2.children[0]
 
             response = self.client.get(course_home_url(course))
-            self.assertContains(response, vertical1.display_name)
-            self.assertNotContains(response, vertical2.display_name)
+            vertical1_url = reverse(
+                'jump_to',
+                kwargs = {'course_id': course.id, 'location': vertical1.location}
+            )
+            vertical2_url = reverse(
+                'jump_to',
+                kwargs={'course_id': course.id, 'location': vertical2.location}
+            )
+
+            self.assertContains(response, get_sequential_button(vertical1_url, False))
+            self.assertContains(response, get_sequential_button(vertical2_url, True))
 
 
 class TestCourseOutlinePreview(SharedModuleStoreTestCase):
