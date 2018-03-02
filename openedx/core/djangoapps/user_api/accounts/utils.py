@@ -109,7 +109,7 @@ def retrieve_last_sitewide_block_completed(username):
     :return: block_lms_url
 
     """
-    if not visual_progress_enabled:
+    if not visual_progress_enabled(None):
         return
 
     if not isinstance(username, User):
