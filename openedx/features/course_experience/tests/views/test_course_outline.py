@@ -518,6 +518,33 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
         content = pq(response.content)
         self.assertTrue(content('.action-resume-course').attr('href').endswith('/course/' + course.url_name))
 
+    @override_switch(
+        '{}.{}'.format(
+            waffle.WAFFLE_NAMESPACE, waffle.ENABLE_COMPLETION_TRACKING
+        ),
+        active=True
+    )
+    @patch('completion.waffle.get_current_site')
+    def test_course_outline_auto_open(self, get_patched_current_site):
+        """
+        Tests that the course outline auto-opens to the first unit
+        in a course if a user has no completion data, and to the
+        last-accessed unit if a user does have completion data.
+        """
+        self.override_waffle_switch(True)
+        get_patched_current_site.return_value = self.site
+
+        with patch('openedx.features.course_experience.waffle.new_course_outline_enabled', Mock(return_value=True)):
+            # Course tree
+            course = self.course
+            course_key = CourseKey.from_string(str(course.id))
+            vertical1 = course.children[0].children[0].children[0]
+            vertical2 = course.children[0].children[1].children[0]
+
+            response = self.client.get(course_home_url(course))
+            self.assertContains(response, vertical1.get('name'))
+            self.assertNotContains(response, vertical2.get('name'))
+
 
 class TestCourseOutlinePreview(SharedModuleStoreTestCase):
     """

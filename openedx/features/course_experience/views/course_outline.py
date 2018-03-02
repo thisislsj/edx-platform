@@ -39,7 +39,7 @@ class CourseOutlineFragmentView(EdxFragmentView):
 
         resume_block = get_resume_block(course_block_tree)
         if not resume_block:
-            course_block_tree = self.mark_first_unit_to_resume(course_block_tree)
+            self.mark_first_unit_to_resume(course_block_tree)
 
         # TODO: EDUCATOR-2283 Remove 'show_visual_progress' from context
         # and remove the check for it in the HTML file
@@ -155,21 +155,8 @@ class CourseOutlineFragmentView(EdxFragmentView):
         except CourseEnrollment.DoesNotExist:
             return False
 
-    def mark_first_unit_to_resume(self, course_block_tree):
-        def get_first_child(block):
-            children = block.get('children')
-            return children[0] if children else None
-
-        first_section = get_first_child(course_block_tree)
-        if first_section:
-            first_section['resume_block'] = True
-
-        first_subsection = get_first_child(first_section)
-        if first_subsection:
-            first_subsection['resume_block'] = True
-
-        first_unit = get_first_child(first_subsection)
-        if first_unit:
-            first_unit['resume_block'] = True
-
-        return course_block_tree
+    def mark_first_unit_to_resume(self, block_node):
+        children = block_node.get('children')
+        if children:
+            children[0]['resume_block'] = True
+            self.mark_first_unit_to_resume(children[0])
