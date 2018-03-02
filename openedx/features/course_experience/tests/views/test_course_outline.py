@@ -60,8 +60,16 @@ class TestCourseOutlinePage(SharedModuleStoreTestCase):
                 chapter = ItemFactory.create(category='chapter', parent_location=course.location)
                 sequential = ItemFactory.create(category='sequential', parent_location=chapter.location)
                 sequential2 = ItemFactory.create(category='sequential', parent_location=chapter.location)
-                vertical = ItemFactory.create(category='vertical', parent_location=sequential.location)
-                vertical2 = ItemFactory.create(category='vertical', parent_location=sequential2.location)
+                vertical = ItemFactory.create(
+                    category='vertical',
+                    parent_location=sequential.location,
+                    display_name="Vertical 1"
+                )
+                vertical2 = ItemFactory.create(
+                    category='vertical',
+                    parent_location=sequential2.location,
+                    display_name="Vertical 2"
+                )
             course.children = [chapter]
             chapter.children = [sequential, sequential2]
             sequential.children = [vertical]
@@ -537,13 +545,15 @@ class TestCourseOutlineResumeCourse(SharedModuleStoreTestCase, CompletionWaffleT
         with patch('openedx.features.course_experience.waffle.new_course_outline_enabled', Mock(return_value=True)):
             # Course tree
             course = self.course
-            course_key = CourseKey.from_string(str(course.id))
-            vertical1 = course.children[0].children[0].children[0]
-            vertical2 = course.children[0].children[1].children[0]
+            chapter = course.children[0]
+            sequential1 = chapter.children[0]
+            vertical1 = sequential1.children[0]
+            sequential2 = chapter.children[1]
+            vertical2 = sequential2.children[0]
 
             response = self.client.get(course_home_url(course))
-            self.assertContains(response, vertical1.get('name'))
-            self.assertNotContains(response, vertical2.get('name'))
+            self.assertContains(response, vertical1.display_name)
+            self.assertNotContains(response, vertical2.display_name)
 
 
 class TestCourseOutlinePreview(SharedModuleStoreTestCase):
