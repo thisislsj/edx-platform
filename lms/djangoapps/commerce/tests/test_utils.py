@@ -105,7 +105,7 @@ class EcommerceServiceTests(TestCase):
     @override_settings(ECOMMERCE_PUBLIC_URL_ROOT='http://ecommerce_url')
     def test_get_order_dashboard_url(self):
         """Verify that the proper order dashboard url is returned."""
-        url = EcommerceService().get_order_dashboard_url(order_number)
+        url = EcommerceService().get_order_dashboard_url()
         expected_url = 'http://ecommerce_url/dashboard/orders'
         self.assertEqual(url, expected_url)
 
