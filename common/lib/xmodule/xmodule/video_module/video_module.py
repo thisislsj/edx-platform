@@ -47,6 +47,7 @@ from .transcripts_utils import (
     get_video_ids_info,
     Transcript,
     VideoTranscriptsMixin,
+    clean_video_id,
 )
 from .transcripts_model_utils import (
     is_val_transcript_feature_enabled_for_course
@@ -99,6 +100,7 @@ _ = lambda text: text
 
 
 EXPORT_STATIC_DIR = u'static'
+EXPORT_STATIC_PATH = u'/static'
 
 
 @XBlock.wants('settings', 'completion')
@@ -234,7 +236,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
         # If we have an edx_video_id, we prefer its values over what we store
         # internally for download links (source, html5_sources) and the youtube
         # stream.
-        if self.edx_video_id and edxval_api:
+        if self.edx_video_id:
             try:
                 val_profiles = ["youtube", "desktop_webm", "desktop_mp4"]
 
@@ -714,7 +716,7 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
                 ele.set('src', self.transcripts[transcript_language])
                 xml.append(ele)
 
-        if self.edx_video_id and edxval_api:
+        if clean_video_id(self.edx_video_id):
             try:
                 # Create static dir if not created earlier.
                 resource_fs.makedirs(EXPORT_STATIC_DIR, recreate=True)

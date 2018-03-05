@@ -41,6 +41,7 @@ from xmodule.tests.test_import import DummySystem
 from xmodule.tests.test_video import VideoDescriptorTestBase, instantiate_descriptor
 from xmodule.video_module import VideoDescriptor, bumper_utils, rewrite_video_url, video_utils
 from xmodule.video_module.transcripts_utils import Transcript, save_to_store
+from xmodule.video_module.video_module import EXPORT_STATIC_PATH
 from xmodule.x_module import STUDENT_VIEW
 
 from .helpers import BaseTestXmodule
@@ -52,7 +53,6 @@ MODULESTORES = {
     ModuleStoreEnum.Type.split: TEST_DATA_SPLIT_MODULESTORE,
 }
 
-EXPORT_STATIC_PATH = u'/static'
 TRANSCRIPT_FILE_DATA = """
 1
 00:00:14,370 --> 00:00:16,530
@@ -1571,7 +1571,7 @@ class VideoDescriptorTest(TestCase, VideoDescriptorTestBase):
 
     def test_export_val_data_with_internal(self):
         """
-        Tests that export VAL videos are working as expected.
+        Tests that exported VAL videos are working as expected.
         """
         language_code = 'ar'
         transcript_file_name = 'test_edx_video_id-ar.srt'
@@ -1641,7 +1641,7 @@ class VideoDescriptorTest(TestCase, VideoDescriptorTestBase):
     @patch('xmodule.video_module.transcripts_utils.get_video_ids_info')
     def test_export_no_video_ids(self, mock_get_video_ids_info):
         """
-        Tests export when there are no video id. `export_to_xml` only works in case of video id.
+        Tests export when there is no video id. `export_to_xml` only works in case of video id.
         """
         mock_get_video_ids_info.return_value = True, []
 
