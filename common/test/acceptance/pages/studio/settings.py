@@ -263,6 +263,7 @@ class SettingsPage(CoursePage):
         selected = checkbox.is_selected()
         if required and not selected or not required and selected:
             self.browser.execute_script("$('#entrance-exam-enabled').click()")
+            self.browser.execute_script("$('#entrance-exam-enabled').click()")
             self.wait_for_ajax()
 
     def save_changes(self, wait_for_confirmation=True):
