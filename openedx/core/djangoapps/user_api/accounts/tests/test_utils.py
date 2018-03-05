@@ -85,13 +85,13 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         """
         course = CourseFactory.create()
         with self.store.bulk_operations(course.id):
-            chapter = ItemFactory.create(category='chapter', parent_location=course.location)
-            sequential = ItemFactory.create(category='sequential', parent_location=chapter.location)
-            vertical1 = ItemFactory.create(category='vertical', parent_location=sequential.location)
-            vertical2 = ItemFactory.create(category='vertical', parent_location=sequential.location)
-        course.children = [chapter]
-        chapter.children = [sequential]
-        sequential.children = [vertical1, vertical2]
+            self.chapter = ItemFactory.create(category='chapter', parent_location=course.location)
+            self.sequential = ItemFactory.create(category='sequential', parent_location=self.chapter.location)
+            self.vertical1 = ItemFactory.create(category='vertical', parent_location=self.sequential.location)
+            self.vertical2 = ItemFactory.create(category='vertical', parent_location=self.sequential.location)
+        course.children = [self.chapter]
+        self.chapter.children = [self.sequential]
+        self.sequential.children = [self.vertical1, self.vertical2]
 
         if hasattr(self, 'user_one'):
             CourseEnrollment.enroll(self.engaged_user, course.id)
@@ -122,10 +122,11 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         empty_block_url = retrieve_last_sitewide_block_completed(self.cruft_user)
         self.assertEqual(
             block_url,
-            u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/vertical_4'.format(
+            u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/{vertical_id}'.format(
                 org=self.course.location.course_key.org,
                 course=self.course.location.course_key.course,
                 run=self.course.location.course_key.run,
+                vertical_id=self.vertical1.location.block_id,
             )
         )
         self.assertEqual(empty_block_url, None)
@@ -133,7 +134,7 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
     @override_settings(LMS_BASE='test_url:9999')
     @patch('completion.waffle.get_current_site')
     def test_retrieve_last_sitewide_block_completed_username(self, get_patched_current_site):
-        """
+        """g
         Test that the method returns a URL for the "last completed" block
         when sending a username
         """
@@ -141,10 +142,11 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         empty_block_url = retrieve_last_sitewide_block_completed(self.cruft_user.username)
         self.assertEqual(
             block_url,
-            u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/vertical_4'.format(
+            u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/{vertical_id}'.format(
                 org=self.course.location.course_key.org,
                 course=self.course.location.course_key.course,
                 run=self.course.location.course_key.run,
+                vertical_id=self.vertical1.location.block_id,
             )
         )
         self.assertEqual(empty_block_url, None)
