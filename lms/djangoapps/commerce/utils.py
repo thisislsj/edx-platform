@@ -61,7 +61,7 @@ class EcommerceService(object):
         Returns:
             order dashboard url.
         """
-        return self.ecommerce_url_root + '/dashboard/orders/'  # TODO: Store this in settings?
+        return self.get_absolute_ecommerce_url(CommerceConfiguration.DEFAULT_ORDER_DASHBOARD_URL)
 
     def get_receipt_page_url(self, order_number):
         """

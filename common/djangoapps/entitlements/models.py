@@ -461,7 +461,7 @@ class CourseEntitlementSupportDetail(TimeStampedModel):
         Returns Array of reasons
         """
         return [
-          {'value': value, 'label': label} 
-          for value, label 
-          in cls.ENTITLEMENT_SUPPORT_REASONS
+            {'value': value, 'label': label}
+            for value, label
+            in cls.ENTITLEMENT_SUPPORT_REASONS
         ]
