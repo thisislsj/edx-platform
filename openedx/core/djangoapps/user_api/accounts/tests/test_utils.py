@@ -122,7 +122,11 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         empty_block_url = retrieve_last_sitewide_block_completed(self.cruft_user)
         self.assertEqual(
             block_url,
-            u'//test_url:9999/courses/org.0/course_0/Run_0/jump_to/i4x://org.0/course_0/vertical/vertical_4'
+            u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/vertical_4'.format(
+                org=self.course.location.org,
+                course=self.course.location.course,
+                run=self.course.location.run,
+            )
         )
         self.assertEqual(empty_block_url, None)
 
@@ -137,6 +141,10 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         empty_block_url = retrieve_last_sitewide_block_completed(self.cruft_user.username)
         self.assertEqual(
             block_url,
-            u'//test_url:9999/courses/org.0/course_0/Run_0/jump_to/i4x://org.0/course_0/vertical/vertical_4'
+            u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/vertical_4'.format(
+                org=self.course.location.org,
+                course=self.course.location.course,
+                run=self.course.location.run,
+            )
         )
         self.assertEqual(empty_block_url, None)
