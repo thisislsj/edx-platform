@@ -123,9 +123,9 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         self.assertEqual(
             block_url,
             u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/vertical_4'.format(
-                org=self.course.location.org,
-                course=self.course.location.course,
-                run=self.course.location.run,
+                org=self.course.location.course_key.org,
+                course=self.course.location.course_key.course,
+                run=self.course.location.course_key.run,
             )
         )
         self.assertEqual(empty_block_url, None)
@@ -142,9 +142,9 @@ class CompletionUtilsTestCase(SharedModuleStoreTestCase, CompletionWaffleTestMix
         self.assertEqual(
             block_url,
             u'//test_url:9999/courses/{org}/{course}/{run}/jump_to/i4x://{org}/{course}/vertical/vertical_4'.format(
-                org=self.course.location.org,
-                course=self.course.location.course,
-                run=self.course.location.run,
+                org=self.course.location.course_key.org,
+                course=self.course.location.course_key.course,
+                run=self.course.location.course_key.run,
             )
         )
         self.assertEqual(empty_block_url, None)
