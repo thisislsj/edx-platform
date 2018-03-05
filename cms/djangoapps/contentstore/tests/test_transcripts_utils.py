@@ -778,8 +778,7 @@ class TestGetTranscript(SharedModuleStoreTestCase):
         )
 
         if subs_id:
-            # pylint: disable=attribute-defined-outside-init
-            self.saved_sub = transcripts_utils.save_subs_to_store(
+            transcripts_utils.save_subs_to_store(
                 self.subs_sjson,
                 subs_id,
                 self.video,
@@ -893,3 +892,35 @@ class TestGetTranscript(SharedModuleStoreTestCase):
         self.assertEqual(content, self.subs_srt)
         self.assertEqual(filename, 'edx.srt')
         self.assertEqual(mimetype, self.srt_mime_type)
+
+    def test_get_transcript_invalid_format(self):
+        """
+        Verify that `get_transcript` raises correct exception if transcript format is invalid.
+        """
+        with self.assertRaises(NotFoundError) as invalid_format_exception:
+            transcripts_utils.get_transcript(
+                self.course.id,
+                self.video.location.block_id,
+                'ur',
+                output_format='mpeg'
+            )
+
+        exception_message = text_type(invalid_format_exception.exception)
+        self.assertEqual(exception_message, 'Invalid transcript format `mpeg`')
+
+    def test_get_transcript_not_content(self):
+        """
+        Verify that `get_transcript` function returns correct exception when transcript content is empty.
+        """
+        self.upload_file(self.create_srt_file(''), self.video.location, 'ur_video_101.srt')
+        self.create_transcript('', 'ur',  'ur_video_101.srt')
+
+        with self.assertRaises(NotFoundError) as no_content_exception:
+            transcripts_utils.get_transcript(
+                self.course.id,
+                self.video.location.block_id,
+                'ur'
+            )
+
+        exception_message = text_type(no_content_exception.exception)
+        self.assertEqual(exception_message, 'No transcript content')

@@ -929,6 +929,9 @@ def get_transcript_from_contentstore(video, language, output_format, youtube_id=
     Returns:
         tuple containing content, filename, mimetype
     """
+    if output_format not in (Transcript.SRT, Transcript.SJSON, Transcript.TXT):
+        raise NotFoundError('Invalid transcript format `{output_format}`'.format(output_format=output_format))
+
     transcripts_info = video.get_transcripts_info(is_bumper=is_bumper)
     sub, other_languages = transcripts_info['sub'], transcripts_info['transcripts']
     transcripts = dict(other_languages)
@@ -955,6 +958,9 @@ def get_transcript_from_contentstore(video, language, output_format, youtube_id=
     language_prefix = '{}_'.format(language) if language else ''
     transcript_name = u'{}{}.{}'.format(language_prefix, base_name, output_format)
     transcript_content = Transcript.convert(transcript_content, input_format=input_format, output_format=output_format)
+
+    if not transcript_content.strip():
+        raise NotFoundError('No transcript content')
 
     if youtube_id:
         youtube_ids = youtube_speed_dict(video)
